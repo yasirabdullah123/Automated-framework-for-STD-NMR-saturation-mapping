@@ -1,6 +1,6 @@
-# NMR-STD-Analysis: Automated Framework for Atomic-Resolution Saturation Mapping in STD-NMR
+# STD-NMR Saturation Mapping Framework
 
-**A modular Julia/Python pipeline for high-throughput saturation transfer analysis and parameter optimization**
+**Automated pipeline for atomic-resolution saturation transfer analysis in fragment-based drug discovery**
 
 [![Julia](https://img.shields.io/badge/Julia-1.9+-9558B2?style=flat&logo=julia)](https://julialang.org/)
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat&logo=python)](https://python.org/)
@@ -8,52 +8,45 @@
 
 ## Overview
 
-This repository provides a high-performance framework in Julia and Python to automate the quantitative analysis of Saturation Transfer Difference (STD) NMR spectroscopy. It enables researchers to map saturation transfer at atomic resolution across 3D protein structures, identifying systematic detection blind spots in fragment-based drug discovery.
+This framework automates the quantitative analysis of Saturation Transfer Difference (STD) NMR spectroscopy, mapping saturation transfer at atomic resolution across protein 3D structures. The pipeline identifies systematic detection biases and optimizes experimental parameters for uniform coverage in fragment screening campaigns.
 
-The pipeline was developed using Hen Egg White Lysozyme (HEWL) as a model system, demonstrating robust performance even in challenging low-SNR environments (natural abundance ¹³C).
+**Key Innovation:** Application of the Reciprocal Best Hit (RBH) algorithm—originally from bioinformatics—to NMR peak assignment, providing unbiased, high-confidence chemical shift matching with automated ambiguity detection.
 
-### Key Features
+### Core Features
 
-- **Reciprocal Best Hit (RBH) Assignment:** Bioinformatics-inspired algorithm for unbiased, high-confidence peak assignment with ambiguity detection
-- **Statistical Model Selection:** Automated kinetic fitting using Akaike Information Criterion (AICc) to discriminate between mono-exponential and complex buildup kinetics
-- **3D Structure Mapping:** Python-based PyMOL API integration for automated generation of publication-ready molecular visualizations
-- **Parameter Optimization:** Systematic evaluation of saturation time, RF pulse shape, and frequency offset to maximize detection uniformity
+- **Bioinformatics-Inspired Assignment:** RBH algorithm ensures mutual best-match verification between experimental and reference peak lists
+- **Information-Theoretic Model Selection:** AICc-based kinetic fitting distinguishes mono-exponential from complex saturation buildup
+- **PyMOL Integration:** Automated 3D visualization pipeline for publication-quality structural figures
+- **Modular Architecture:** Clean separation between analysis logic, visualization, and configuration
 
-### Case Study: HEWL Natural Abundance Analysis
+### Demonstration: HEWL Case Study
 
-Using a natural abundance ¹³C sample as a stress test, the pipeline demonstrated:
-- 8-fold variation in saturation kinetics across protein sites (k_sat: 0.563–4.635 s⁻¹)
-- Identification of frequency-dependent blind spots affecting aromatic binding regions
-- Quantitative pulse shape performance comparison for uniformity optimization
+The framework was validated using Hen Egg White Lysozyme (HEWL) natural abundance ¹³C data as a stress test:
+- 8-fold kinetic heterogeneity detected (k_sat: 0.563–4.635 s⁻¹)
+- Frequency-dependent blind spots identified in aromatic binding regions
+- Quantitative pulse shape optimization for detection uniformity
 
-**Note:** While this case study uses low-SNR natural abundance data, the framework is optimized for isotopically labeled samples and achieves maximum performance with ¹³C-labeled proteins.
+**Note:** This demonstration used challenging low-SNR natural abundance data. Performance is significantly enhanced with isotopically labeled samples (recommended).
 
 ---
 
 ## Repository Structure
 
 ```
-├── src/                                    # Source code
-│   ├── assignment/
-│   │   └── peak_assignment_rbh.jl         # Reciprocal Best Hit peak assignment algorithm
-│   ├── analysis/
-│   │   ├── saturation_time_analysis.jl    # Temporal kinetics optimization (0.1-5.0 s)
-│   │   ├── pulse_shape_analysis.jl        # Gaussian/E-BURP1/I-BURP2 comparison
-│   │   └── frequency_offset_analysis.jl   # Blind spot mapping (-0.5 to 8.5 ppm)
-│   ├── visualization/
-│   │   ├── generate_publication_figures.jl # Master figure generation pipeline
-│   │   ├── generate_frequency_heatmaps.jl  # Frequency-dependent saturation maps
-│   │   ├── generate_pulse_heatmaps.jl      # Pulse shape comparison visualizations
-│   │   └── generate_time_heatmaps.jl       # Temporal saturation kinetics maps
-│   └── utils/
-│       └── nmr_analysis_utils.jl           # Core NMR processing utilities
-├── data/
-│   └── *.tsv                               # Peak assignments and master lists
-├── output/
-│   ├── figures/                            # Publication-ready figures
-│   └── pymol_scripts/
-│       └── generate_std_nmr_optimizer.py   # 3D molecular visualization automation
-└── docs/                                   # Documentation and manuscripts
+├── src/
+│   ├── RBHAssign.jl          # Reciprocal Best Hit peak assignment algorithm
+│   ├── ModelSelector.jl      # AICc-based kinetic model selection
+│   ├── PyMOLGenerator.py     # 3D molecular visualization automation
+│   └── NMRAnalysisUtils.jl   # Core NMR processing utilities
+├── scripts/
+│   └── run_pipeline.jl       # Master automation script
+├── config/
+│   └── hewl_settings.yaml    # Configuration (chemical shifts, tolerances, thresholds)
+├── data/processed/
+│   └── master-peak-list-rbh-optimized.tsv
+├── results/
+│   └── master-peak-list-rbh-optimized.tsv  # Sample output
+└── Project.toml              # Julia environment specification
 ```
 
 ---
@@ -62,15 +55,14 @@ Using a natural abundance ¹³C sample as a stress test, the pipeline demonstrat
 
 ### Prerequisites
 
-- **Julia** ≥ 1.9 with packages: `NMRTools`, `Plots`, `StatsPlots`, `LsqFit`, `Measurements`
-- **Python** ≥ 3.8 with `PyMOL` for 3D visualization
-- **ImageMagick** for figure processing
+- **Julia** ≥ 1.9
+- **Python** ≥ 3.8 with PyMOL
 
 ### Installation
 
 ```bash
-git clone https://github.com/yasirabdullah123/An-HSQC-Based-Investigation-of-Saturation-Transfer-Heterogeneity-in-STD-NMR.git
-cd An-HSQC-Based-Investigation-of-Saturation-Transfer-Heterogeneity-in-STD-NMR
+git clone https://github.com/yasirabdullah123/Automated-framework-for-STD-NMR-saturation-mapping.git
+cd Automated-framework-for-STD-NMR-saturation-mapping
 
 # Install Julia dependencies
 julia --project=. -e 'using Pkg; Pkg.instantiate()'
@@ -78,100 +70,99 @@ julia --project=. -e 'using Pkg; Pkg.instantiate()'
 
 ### Configuration
 
-The pipeline uses `config/settings.yaml` for all configurable parameters:
+All parameters are centralized in `config/hewl_settings.yaml`:
 
-- **Chemical shift corrections:** Adjust for systematic offsets between experimental and reference data
-- **Uncertainty thresholds:** Default 5% for labeled samples, 25% for natural abundance
-- **Assignment tolerances:** ¹H (0.1 ppm) and ¹³C (1.0 ppm) matching windows
-- **Ambiguity detection:** Flags assignments where 2nd-best hit is within 20% of best
+- **Chemical shift corrections:** System-specific offsets (¹H: -0.11 ppm, ¹³C: -3.05 ppm for HEWL)
+- **Uncertainty thresholds:** 5% (isotopically labeled) or 25% (natural abundance)
+- **Assignment tolerances:** ¹H (0.1 ppm), ¹³C (1.0 ppm)
+- **Ambiguity detection:** Flags assignments where second-best match is within 20% of best hit
 
-Edit this file to adapt the pipeline to your specific protein system and experimental conditions.
+Adapt this file for your protein system and experimental conditions.
 
-### Running Analyses
+### Running the Pipeline
 
 ```bash
-# Parameter optimization studies
-cd src/analysis
-julia saturation_time_analysis.jl      # saturation time analysis 
-julia pulse_shape_analysis.jl          # Pulse shape analysis 
-julia frequency_offset_analysis.jl     # saturation frequency analysis 
+# Automated full pipeline
+julia scripts/run_pipeline.jl
 
-# Generate figures
-cd ../visualization
-julia generate_publication_figures.jl
-
-# 3D molecular visualizations scripts
-cd ../../output/pymol_scripts
-python generate_std_nmr_optimizer.py
+# Or run individual modules
+julia src/RBHAssign.jl          # Peak assignment
+julia src/ModelSelector.jl      # Kinetic analysis with AICc
+python src/PyMOLGenerator.py    # 3D visualization
 ```
 
 ---
 
-## Key Algorithms
+## Core Algorithms
 
-### 1. Reciprocal Best Hit (RBH) Peak Assignment
+### Reciprocal Best Hit (RBH) Assignment
 
-**Location:** `src/assignment/peak_assignment_rbh.jl`
+**Implementation:** `src/RBHAssign.jl`
 
-Novel bidirectional verification algorithm for robust HSQC peak assignment:
-- Bidirectional verification ensuring >95% reliability
-- Normalized Euclidean distance: `d = sqrt((Δδ_H/0.1)² + (Δδ_C/1.0)²)`
-- Systematic chemical shift corrections for temperature/experimental conditions
+Adapted from ortholog identification in comparative genomics, this algorithm ensures mutual best-match verification:
 
-### 2. Δ-Σ Diagnostic Framework
+1. **Forward assignment:** Each experimental peak finds its nearest reference match
+2. **Reverse verification:** Each reference peak finds its nearest experimental match
+3. **RBH criterion:** Assignments confirmed only when both directions agree
 
+**Distance metric:** Normalized Euclidean distance accounting for dimension-specific tolerances:
+```
+d = sqrt((Δδ_H / 0.1 ppm)² + (Δδ_C / 1.0 ppm)²)
+```
 
-Quantitative blind spot identification:
-- **Σ** = Total saturation accessibility (aliphatic + aromatic)
-- **Δ** = Frequency-dependent bias (aliphatic - aromatic)
-- **Critical threshold:** Σ ≥ 0.8 AND Δ < -0.15
+**Ambiguity detection:** Flags assignments where the second-best match is within 20% of the best match, indicating potential spectral overlap.
 
-### 3. Multi-Exponential Kinetic Fitting
+**Why this matters:** Unlike greedy assignment algorithms, RBH prevents false-positive assignments in crowded spectral regions, ensuring high-confidence peak identification.
 
+### AICc-Based Model Selection
 
-Statistical model selection via AICc:
-- Mono-exponential: `I(t) = I₀(1 - e^(-kt))`
-- Stretched exponential: `I(t) = I₀(1 - e^(-(kt)^β))`
-- Quality filters: R² > 0.85, uncertainty < 25%
+**Implementation:** `src/ModelSelector.jl`
 
----
+Uses Akaike Information Criterion (corrected for small sample sizes) to select the optimal kinetic model:
 
-## Data
+- **Mono-exponential:** `I(t) = I₀(1 - exp(-k·t))`
+- **Stretched exponential:** `I(t) = I₀(1 - exp(-(k·t)^β))`
 
-### Raw NMR Experiments (`data/raw_experiments/`)
+The algorithm penalizes model complexity, preventing overfitting while identifying genuine multi-exponential behavior indicative of complex saturation pathways.
 
-** systematically designed Bruker experiments:**
-- **Temporal series:** 10 time points (0.1-5.0 s) → kinetic heterogeneity quantification
-- **Frequency sweep:** 19 offsets (-0.5 to 8.5 ppm) → blind spot mapping
-- **Pulse shapes:** Gaussian/E-BURP1/I-BURP2 → uniformity optimization
-- **Temperature study:** 283K, 293K, 303K → thermal effects on spin diffusion
+**Quality control:** Rejects fits with R² < 0.85 or parameter uncertainty > threshold (5% labeled, 25% natural abundance).
 
+## Technical Highlights
 
----
+This repository demonstrates:
 
-## Publication Figures
-
-All figures generated by `src/visualization/generate_publication_figures.jl`:
-
-- **Figure 1:** Global Kinetic Portrait (3-panel composite)
-- **Figure 2:** Δ-Σ Diagnostic Plot (6 critical blind spots identified)
-- **Figure 3:** Frequency Response Profile (average saturation behavior)
-- **Figure 4:** Pulse Shape Performance (split raincloud visualization)
-
-**Output:** High-resolution SVG (300 DPI equivalent), standardized I/I₀ color mapping
+- **Cross-disciplinary algorithm adaptation:** RBH from bioinformatics to NMR
+- **Statistical rigor:** Information-theoretic model selection (AICc)
+- **API integration:** Python-PyMOL bridge for automated 3D visualization
+- **Modular design:** Clean separation of concerns with centralized configuration
+- **Reproducibility:** Full dependency specification via `Project.toml`
 
 ---
 
+## Use Cases
+
+- **Method development:** Benchmark new assignment algorithms against RBH
+- **Parameter optimization:** Adapt pipeline for custom saturation schemes
+- **Quality control:** Detect systematic biases in STD-NMR experiments
+- **Education:** Learn statistical model selection in biophysical data analysis
+
+---
 
 ## Author
 
 **Abdullah Yasir**
-MSc Drug Discovery and Development, University College London
+MSc Drug Discovery and Development
+University College London
+
+---
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
 ## Acknowledgments
 
-- **Dr. Christopher Waudby** (UCL) - Supervision and NMR expertise
-- **BMRB Entry 4562** - Reference chemical shift database
-- **NMR community** - Open-source tools and methodologies
+- Dr. Christopher Waudby (UCL) - NMR methodology guidance
+- BMRB Entry 4562 - Reference chemical shift database
