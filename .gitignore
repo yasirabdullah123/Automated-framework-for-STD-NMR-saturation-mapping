@@ -1,0 +1,114 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Temporary files
+*.tmp
+*~
+~$*
+
+# Julia
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+.julia/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+
+# NMR temporary files
+*.ucsf
+*.ft2
+*.ft1
+
+# Backup files
+*.backup
+*_old
+*_backup
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary analysis files
+debug*.jl
+debug*.tex
+temp*.jl
+draft.jl
+
+# Large data files (keep in local only)
+*.zip
+marp-main/
+CascadiaCode.zip
+
+# Raw NMR experiment data (too large for GitHub)
+data/raw_experiments/
+data/example/
+
+# Office temporary files
+~$*.xlsx
+~$*.pptx
+~$*.docx
+*.xlsx
+
+# Other temporary directories
+lysozmesattest/
+"untitled folder"/
+"untitled folder 2"/
+
+# Font files (not needed in repository)
+*.ttf
+*.otf
+*.woff2
+otf/
+ttf/
+woff2/
+
+# Development/dissertation files
+*.tex
+diss.tex
+debug*.tex
+dissertation_template.tex
+template.tex
+harvard.csl
+*.csl
+
+# Temporary analysis folders
+tempanalysis/
+combined_283K_reference/
+combined_spectra/
+
+# Configuration and workspace files
+lysozymesattest.code-workspace
+.claude/
+.vscode/
+
+# Miscellaneous files
+animatingspec.text
+kinetics.gif
+meta data nmr tools
+nmrtoolsdocs
+push_to_github.sh
+283k analysis
+assignment_verification_rbh_optimized.jpg
+assignment_figure/
+ccpn.1/
+package-lock.json
+master.xlsx
+master-peak-list.tsv
+peak_list_283K_combined_scripted.tsv
+temperature_comparison_data.csv
+temperature_comparison_summary.csv
+*.ucsf

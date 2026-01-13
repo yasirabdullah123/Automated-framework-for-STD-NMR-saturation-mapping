@@ -1,0 +1,55 @@
+# NMR Analysis Configuration File
+# ================================
+# This file contains all configurable parameters for the STD-NMR analysis pipeline
+
+# Chemical Shift Corrections
+# ---------------------------
+# These values are specific to the HEWL dataset and correct for systematic
+# offsets between the experimental and reference chemical shifts
+chemical_shifts:
+  h_correction: -0.11  # ppm - 1H dimension offset
+  c_correction: -3.05  # ppm - 13C dimension offset
+
+# Peak Assignment Tolerances
+# ---------------------------
+# Tolerances for the Reciprocal Best Hit (RBH) algorithm
+assignment:
+  h_tolerance: 0.1  # ppm - 1H matching window
+  c_tolerance: 1.0  # ppm - 13C matching window
+  ambiguity_threshold: 0.20  # Flag assignments where 2nd best hit is within 20% of best hit
+
+# Uncertainty Filtering
+# ----------------------
+# Threshold for I/I0 ratio uncertainty
+# Default: 0.05 (5%) for labeled samples
+# HEWL natural abundance: 0.25 (25%) due to low SNR
+uncertainty:
+  default_threshold: 0.05  # Recommended for isotopically labeled samples
+  natural_abundance_threshold: 0.25  # Used for low-SNR natural abundance data
+
+# Noise Filtering
+# ---------------
+# Signal-to-noise ratio threshold for peak detection
+noise:
+  snr_threshold_factor: 3.0  # Minimum S/N ratio for peak inclusion
+
+# File Paths (relative to project root)
+# --------------------------------------
+paths:
+  data_dir: "data"
+  raw_experiments_dir: "data/raw_experiments"
+  output_dir: "output"
+  figures_dir: "output/figures"
+  pymol_scripts_dir: "output/pymol_scripts"
+
+# Experiment-Specific Settings
+# -----------------------------
+# Reference experiments for different analysis types
+experiments:
+  reference_spectrum: 4
+  frequency_analysis: 31
+  time_analysis: 33
+  pulse_shape_gaussian_50ms: 34
+  pulse_shape_gaussian_5ms: 35
+  pulse_shape_eburp1_20ms: 36
+  pulse_shape_gaussian_2_5ms: 41
