@@ -112,3 +112,22 @@ peak_list_283K_combined_scripted.tsv
 temperature_comparison_data.csv
 temperature_comparison_summary.csv
 *.ucsf
+
+# Ignore spectromenter raw data
+**/pdata/
+**/ser
+**/fid
+**/2rr
+**/2ii
+**/3rrr
+**/3iii
+
+# Ignore system junk
+.DS_Store
+*.log
+*.tmp
+
+# Ignore intermediate/backup data
+data/peak_lists/ccpnTable*
+data/processed/*-new.tsv
+data/processed/*-rbh.tsv
